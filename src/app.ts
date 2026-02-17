@@ -12,8 +12,7 @@ const app = express();
 // Middlewares
 app.use(helmet()); // Security headers
 app.use(cors({
-  origin: "http://localhost:3000", // your Next.js frontend
-  credentials: true
+  origin: "https://task-managemant-frontend.vercel.app", 
 }));
 
 app.use(express.json());
