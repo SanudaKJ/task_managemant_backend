@@ -12,7 +12,8 @@ const app = express();
 // Middlewares
 app.use(helmet()); // Security headers
 app.use(cors({
-  origin: "https://task-managemant-frontend.vercel.app", 
+  origin: "https://task-managemant-frontend.vercel.app/", 
+  credentials: true
 }));
 
 app.use(express.json());
