@@ -11,10 +11,21 @@ const app = express();
 
 // Middlewares
 app.use(helmet()); // Security headers
-app.use(cors({
-  origin: "http://localhost:3000", // your Next.js frontend
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // Allow Postman / server-to-server calls (no Origin header)
+      if (!origin) return cb(null, true);
+
+      // Allow your frontend
+      if (origin === process.env.FRONTEND_URL) return cb(null, true);
+
+      return cb(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(rateLimiter); // Rate limiting
@@ -25,6 +36,5 @@ app.use("/tasks", taskRoutes);
 
 // Error Handling
 app.use(errorHandler);
-
 
 export default app;

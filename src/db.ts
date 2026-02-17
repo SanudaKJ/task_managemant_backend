@@ -1,35 +1,25 @@
+// src/db.ts
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-import app from "./app";
 
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URI || "";
+const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
   throw new Error("MONGO_URI is not defined");
 }
 
-// Prevent multiple DB connections in serverless
+// Cache connection across warm invocations
 let cached = (global as any).mongoose;
-
 if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
-async function connectDB() {
+export async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGO_URI).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose.connect(MONGO_URI).then((m) => m);
   }
 
   cached.conn = await cached.promise;
   return cached.conn;
 }
-
-connectDB();
-
-export default app;
