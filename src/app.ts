@@ -12,15 +12,18 @@ const app = express();
 // Middlewares
 app.use(helmet()); // Security headers
 
+const FRONTEND = "https://task-managemant-frontend.vercel.app";
+
 app.use(cors({
-  origin: "https://task-managemant-frontend.vercel.app",
+  origin: FRONTEND,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.options("*", cors({
-  origin: "https://task-managemant-frontend.vercel.app",
+// Preflight for all routes (use RegExp, not "*")
+app.options(/.*/, cors({
+  origin: FRONTEND,
   credentials: true
 }));
 
